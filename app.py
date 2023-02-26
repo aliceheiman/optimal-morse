@@ -11,15 +11,13 @@ import math
 ###################################
 
 
-def altair_bar_chart(df, x_name, y_name):
-    c = (
-        alt.Chart(df)
-        .mark_bar()
-        .encode(
-            x=alt.X(x_name, sort=None),
-            y=y_name,
-        )
-    )
+def altair_bar_chart(df, x_name, y_name, title="", out_file=None):
+    c = alt.Chart(df).mark_bar().encode(x=alt.X(x_name, sort=None), y=y_name)
+    c.title = title
+
+    if out_file:
+        print("here")
+        c.save(out_file, scale_factor=2.0)
 
     st.altair_chart(c)
 
@@ -158,15 +156,105 @@ def generate_morse_chart(chart_dict, x_dim=1200, y_dim=1600, out_file="test.png"
 # PAGE PARTS
 header = st.container()
 body = st.container()
+footer = st.container()
 
 with header:
     st.title("Optimizing Morse for Swedish")
 
 with body:
-    se_alphabet
-    st.table(se_freq)
 
-    altair_bar_chart(se_freq, "Symbol", "Percentage")
-    altair_bar_chart(seq_len, "Sequence", "Length")
+    st.write("The Morse Code maps each letter to a sequence of dots and dashes.")
+    st.write(
+        "How do you determine which sequence each letter should receive? If you think about it, you would probably want the most common letters to have shorter sequences, and the letters that are not used that much to get the longer sequences."
+    )
+    st.write("This is roughly what morse code does. Have a look at the chart:")
 
-    st.table(optimal_se)
+    st.image("results/en_original.png")
+
+    st.write(
+        "I used the NLTK Brown dataset to determine the English letter frequency. By counting how many different letters there are in that corpus, we get the following graph:"
+    )
+    altair_bar_chart(en_freq, "Symbol", "Count", "Letter Frequencies in the English Language")
+
+    st.write(
+        "As you can see, 'E' and 'T' are the most common letters, and it is precisely those two letters who claim the shortest sequences of 'dot' and 'dash' respectively."
+    )
+
+    st.write(
+        "Now, we can analyze how far this goes. But to do this, we need a way of counting the the total length of every possible sequence."
+    )
+
+    st.write(
+        "In Morse, the length is always relative to the 'dot' which is defined to be one unit. All lengths are defined as follows:"
+    )
+    st.markdown(
+        """
+        * Dot: 1 
+        * Dash: 3
+        * Intra-character space: 1
+        * Inter-character space: 3
+        * Word space: 7
+    """
+    )
+
+    st.write(
+        "The intra-character space is the pause between dots and dashes within the *same* character. Inter-character space is the pause between characters."
+    )
+
+    st.write("So to compute the total length of a sequence, let's consider the following: ● ● ▄ ●")
+
+    st.write("In total, we have 3 dots, 1 dash, and 3 intra-character spaces. This sums up to: ")
+    st.latex(r"3 \cdot 1 + 1 \cdot 3 + 3 \cdot 1 = 9")
+    st.write("In short, it has a length of **9 units**.")
+
+    st.write(
+        "Generating a list of all possible combinations and computing their length, we can graph the sequences with shortest to longset sequence lengths."
+    )
+    altair_bar_chart(seq_len, "Sequence", "Length", "Morse Sequence Sorted by Transmission Length")
+
+    st.write(
+        "From this graph, we can map the most frequent letters to the sequences with shortest lengths, thus making them fastest to transmit."
+    )
+    st.write("If we apply this technique to the English language, we get a different Morse Code chart.")
+
+    st.image("results/en_optimal.png")
+
+    st.write("Notice how this alphabet contains many more 'dots' than the original.")
+
+    st.write("Armed with this knowledge, we can apply the same technique to the Swedish language.")
+    st.write(
+        "I performed a similar letter frequency analysis using the Python NLTK library and Språkbankens corpus 'talbanken' together with their python module 'sb-nltk-tools'."
+    )
+
+    altair_bar_chart(se_freq, "Symbol", "Count", "Letter Frequencies in the Swedish Language")
+
+    st.write(
+        "Notice that this time, the letters 'e a r n t' are most common. Mapping the Swedish letter frequencies to their respective optimal sequence we get the following new chart:"
+    )
+
+    st.image("results/se_optimal.png")
+
+with footer:
+    st.header("Conclusion")
+    st.write(
+        "In short, optimizing Morse Code for different languages could have radical differences depending on the letter frequencies. The optimal French Morse Code would most probably be very different that the German one."
+    )
+    st.write(
+        "To note, however, is that the Morse Code is adapted to languages with the Latin Alphabet. Future work could therefore look into Morse Code adaptations to languages with other alphabets."
+    )
+    st.write(
+        "Moreover, although shorter sequences may optimize for transmission time, they can be more confusing for a human to transcribe because it is harder to differentiate between long sequences of 'dits'. Therefore, one might want to change the 'optimal target' by weighing in both length and internal variation to help humans quickly recognize what they are hearing."
+    )
+    st.write(
+        "And of course, as the current Morse Code is already adopted and learned, it is very unprobable to use this new alhpabet. Nonetheless, it is an example of the thinking behind the creation of future communication schemes."
+    )
+    st.write("Thank you for reading! Take care 😀")
+
+    st.header("References")
+    st.markdown(
+        """
+    * Phillips, S.C. (no date) Morse code timing, Morse Code Timing | Morse Code World. Available at: https://morsecode.world/international/timing.html (Accessed: February 26, 2023). 
+    * Språkbanken Github | Spraakbanken/SB-NLTK-tools: Tools for using Språkbanken resources with NLTK, GitHub. Språkbanken. Available at: https://github.com/spraakbanken/sb-nltk-tools (Accessed: February 26, 2023). 
+    * TalbankenSBX | Språkbanken Text. Språkbanken. Available at: https://spraakbanken.gu.se/en/resources/talbanken (Accessed: February 26, 2023).
+    """
+    )
