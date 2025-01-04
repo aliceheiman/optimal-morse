@@ -12,7 +12,7 @@
   <p align="center">
     An exploration into the optimal morse code for English and Swedish based on their respective letter frequencies.
     <br />
-    <a href="#">View Demo</a>
+    <a href="https://optimal-morse.streamlit.app/">View Writeup</a>
     ·
     <a href="https://github.com/aliceheiman/optimal-morse/issues">Report Bug</a>
     ·
@@ -29,7 +29,7 @@ How do you determine which sequence each letter should receive? If you think abo
 
 I performed a letter frequency analysis using the Python NLTK library, the NLTK Brown corpus, and Språkbankens Swedish corpus 'talbanken' together with their python module 'sb-nltk-tools'. Check out my results in the demo!
 
-[You can find the application here]()
+[You can find the writeup here](https://optimal-morse.streamlit.app/)
 
 ### Built With
 
@@ -49,7 +49,7 @@ To get a local copy up and running follow these simple steps.
    ```
 2. Install pip packages
    ```sh
-   ppip install -r requirements.txt
+   pip install -r requirements.txt
    ```
 3. Run streamlit
    ```sh
