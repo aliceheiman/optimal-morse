@@ -53,7 +53,7 @@ To get a local copy up and running follow these simple steps.
    ```
 3. Run streamlit
    ```sh
-   streamlit run Welcome.py
+   streamlit run app.py
    
 And that's it! 👏
 
@@ -65,17 +65,10 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
 <!-- CONTACT -->
 ## Contact
 
-Alice Heiman - kod@heiman.com
+Alice Heiman - aheiman@stanford.com
 
 Project Link: [https://github.com/aliceheiman/optimal-morse](https://github.com/aliceheiman/optimal-morse)
 
